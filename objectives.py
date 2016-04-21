@@ -167,6 +167,8 @@ def mse(units_list, vmap_targets, vmap_predictions):
     vmap_targets: vmap dictionary containing targets
     vmap_predictions: vmap dictionary containing model predictions
     """
+    for u in units_list:
+        print vmap_targets[u], vmap_predictions[u]
     return sum(T.mean((vmap_targets[u] - vmap_predictions[u]) ** 2) for u in units_list)
 
 

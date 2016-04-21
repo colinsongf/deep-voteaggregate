@@ -14,7 +14,7 @@ def generate_data(N):
         else:
             u[i - 1:i + 19, 1] = 1
             u[i + 18:i + 38, 8] = 1
-    print u
+    print u.dtype
     return u
 
 def get_context(u, N=4):

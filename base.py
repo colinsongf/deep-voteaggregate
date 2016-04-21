@@ -48,7 +48,8 @@ class Units(object):
         return self.log_prob_from_activation(vmap, activation_vmap)
 
     def __repr__(self):
-        return "<morb:Units '%s'>" % self.name
+        print "<morb:Units '%s'>" % self.name
+        return "<morb:Units '%s'>" % self.rbm
 
 
 class ProxyUnits(Units):

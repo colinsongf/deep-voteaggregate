@@ -65,7 +65,8 @@ class GaussianBinaryRBM(RBM):
     def _initial_bh(self):
         return np.zeros(self.n_hidden, dtype = theano.config.floatX)
 
-
+    def _get_hidden_units(self):
+        return self.h
 
 class LearntPrecisionGaussianBinaryRBM(RBM):
     """
