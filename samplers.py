@@ -11,37 +11,32 @@ theano_rng = RandomStreams(numpy_rng.randint(2**30))
 ## samplers
 
 def bernoulli(a):
-    # a is the bernoulli parameter
-    return theano_rng.binomial(size=a.shape, n=1, p=a, dtype=theano.config.floatX) 
+    """ Return the bernoulli sample of the data having the given parameter(a)"""
+    return theano_rng.binomial(size=a.shape, n=1, p=a, dtype=theano.config.floatX)
 
 def gaussian(a, var=1.0):
-    # a is the mean, var is the variance (not std or precision!)
+    """ Return the gaussian sample of the data having the given mean(a) and variance(var)"""
     std = T.sqrt(var)
     return theano_rng.normal(size=a.shape, avg=a, std=std, dtype=theano.config.floatX)
-
-        
 
 def multinomial(a):
     # 0 = minibatches
     # 1 = units
     # 2 = states
-    p = a.reshape((a.shape[0]*a.shape[1], a.shape[2]))    
+    p = a.reshape((a.shape[0]*a.shape[1], a.shape[2]))
     # r 0 = minibatches * units
     # r 1 = states
     # this is the expected input for theano.nnet.softmax and theano_rng.multinomial
-    s = theano_rng.multinomial(n=1, pvals=p, dtype=theano.config.floatX)    
+    s = theano_rng.multinomial(n=1, pvals=p, dtype=theano.config.floatX)
     return s.reshape(a.shape) # reshape back to original shape
-    
 
 def exponential(a):
     uniform_samples = theano_rng.uniform(size=a.shape, dtype=theano.config.floatX)
     return (-1 / a) * T.log(1 - uniform_samples)
 
-
 def truncated_exponential(a, maximum=1.0):
     uniform_samples = theano_rng.uniform(size=a.shape, dtype=theano.config.floatX)
     return (-1 / a) * T.log(1 - uniform_samples*(1 - T.exp(-a * maximum)))
-
 
 def truncated_exponential_mean(a, maximum=1.0):
     # return (1 / a) + (maximum / (1 - T.exp(maximum*a))) # this is very unstable around a=0, even for a=0.001 it's already problematic.
@@ -49,34 +44,30 @@ def truncated_exponential_mean(a, maximum=1.0):
     m_real = (1 / a) + (maximum / (1 - T.exp(maximum*a)))
     m_approx = 0.5 - (1./12)*a + (1./720)*a**3 - (1./30240)*a**5 # + (1./1209600)*a**7 # this extra term is unnecessary, it's accurate enough
     return T.switch(T.abs_(a) > 0.5, m_real, m_approx)
- 
-
 
 def laplacian(b, mu=0.0):
     # laplacian distributition is only exponential family when mu=0!
     uniform_samples = theano_rng.uniform(size=b.shape, dtype=theano.config.floatX)
     return mu - b*T.sgn(uniform_samples-0.5) * T.log(1 - 2*T.abs_(uniform_samples-0.5))
-    
-    
-    
+
 ## approximate gamma sampler
 # Two approximations for the gamma function are defined.
 # Windschitl is very fast, but problematic close to 0, and using the reflection formula
 # causes discontinuities.
 # Lanczos on the other hand is extremely accurate, but slower.
-   
+
 def _log_gamma_windschitl(z):
     """
     computes log(gamma(z)) using windschitl's approximation.
     """
     return 0.5 * (T.log(2*np.pi) - T.log(z)  + z * (2 * T.log(z) - 2 + T.log(z * T.sinh(1/z) + 1 / (810*(z**6)))))
-    
+
 def _log_gamma_ratio_windschitl(z, k):
     """
     computes log(gamma(z+k)/gamma(z)) using windschitl's approximation.
     """
     return _log_gamma_windschitl(z + k) - _log_gamma_windschitl(z)
-    
+
 
 def _log_gamma_lanczos(z):
     # optimised by nouiz. thanks!
@@ -120,14 +111,14 @@ def _log_gamma_lanczos_sub(z): # expanded version
     log_sqrt_2pi = np.asarray(np.log(np.sqrt(2 * np.pi)), dtype=z.dtype)
     return log_sqrt_2pi + (z + 0.5) * T.log(t) - t + T.log(x)
 
-    
+
 def _log_gamma_ratio_lanczos(z, k):
     """
     computes log(gamma(z+k)/gamma(z)) using the lanczos approximation.
-    """ 
+    """
     return _log_gamma_lanczos(z + k) - _log_gamma_lanczos(z)
-    
- 
+
+
 def gamma_approx(k, theta=1):
     """
     Sample from a gamma distribution using the Wilson-Hilferty approximation.
@@ -145,8 +136,3 @@ def gamma_approx(k, theta=1):
     # of resulting samples is roughly symmetric around 0. By 'folding' the negative part
     # onto the positive part, we still get a decent approximation because of this.
     return gamma_samples
-    
-    
-    
-    
-

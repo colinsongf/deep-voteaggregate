@@ -3,8 +3,8 @@
 import theano
 from theano import tensor
 import numpy
- 
-    
+
+
 def tensordot(a, b, axes=2):
     """
     implementation of tensordot that reduces to a regular matrix product. This allows tensordot to be GPU accelerated,
@@ -13,7 +13,7 @@ def tensordot(a, b, axes=2):
     """
     if numpy.isscalar(axes):
         # if 'axes' is a number of axes to multiply and sum over (trailing axes
-        # of a, leading axes of b), we can just reshape and use dot.         
+        # of a, leading axes of b), we can just reshape and use dot.
         outshape = tensor.concatenate([a.shape[:a.ndim - axes], b.shape[axes:]])
         outndim = a.ndim + b.ndim - 2*axes
         a_reshaped = a.reshape((tensor.prod(a.shape[:a.ndim - axes]), tensor.prod(a.shape[a.ndim - axes:])))

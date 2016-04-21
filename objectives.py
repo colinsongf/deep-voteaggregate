@@ -8,28 +8,28 @@ import samplers
 #    """
 #    Takes an RBM that consists only of units that implement mean field.
 #    The means of these units will be treated as activations of an autoencoder.
-#    
+#
 #    Note that this can only be used for autoencoders with tied weights.
-#    
+#
 #    input
 #    rbm: the RBM object
 #    vmap: a vmap dictionary of input units instances of the RBM mapped to theano expressions.
 #    visible_units: a list of input units, the autoencoder will attempt to reconstruct these
 #    hidden_units: the hidden layer of the autoencoder
-#    
+#
 #    context units should simply be added in the vmap, they need not be specified.
-#    
+#
 #    output
 #    a vmap dictionary giving the reconstructions.
 #    """
-#    
+#
 #    # complete units lists
 #    visible_units = rbm.complete_units_list(visible_units)
 #    hidden_units = rbm.complete_units_list(hidden_units)
-#    
+#
 #    # complete the supplied vmap
 #    vmap = rbm.complete_vmap(vmap)
-#    
+#
 #    hidden_vmap = rbm.mean_field(hidden_units, vmap)
 #    hidden_vmap.update(vmap) # we can just add the supplied vmap to the hidden vmap to
 #    # ensure that any context units are also in the hidden vmap. We do not run the risk
@@ -37,9 +37,9 @@ import samplers
 #    # note that the hidden vmap need not be completed, since the hidden_units list
 #    # has already been completed.
 #    reconstruction_vmap = rbm.mean_field(visible_units, hidden_vmap)
-#    
+#
 #    return reconstruction_vmap
-    
+
 
 
 ### autoencoder objective + utilities ###
@@ -72,24 +72,24 @@ def autoencoder(rbm, visible_units, hidden_units, v0_vmap, v0_vmap_source=None):
         log_prob_terms.append(T.sum(T.mean(lp, 0))) # mean over the minibatch dimension
 
     total_log_prob = sum(log_prob_terms)
-    
+
     return total_log_prob
 
 
 
-def mean_reconstruction(rbm, visible_units, hidden_units, v0_vmap):   
+def mean_reconstruction(rbm, visible_units, hidden_units, v0_vmap):
     """
     Computes the mean reconstruction for a given RBM and a set of visibles and hiddens.
     E[v|h] with h = E[h|v].
-    
+
     input
     rbm: the RBM object
     vmap: a vmap dictionary of input units instances of the RBM mapped to theano expressions.
     visible_units: a list of input units
     hidden_units: the hidden layer of the autoencoder
-    
+
     context units should simply be added in the vmap, they need not be specified.
-    
+
     output
     a vmap dictionary giving the reconstructions.
 
@@ -97,14 +97,14 @@ def mean_reconstruction(rbm, visible_units, hidden_units, v0_vmap):
     units list is completed with all proxies. So it's probably not a good idea to iterate over
     the output vmap.
     """
-    
+
     # complete units lists
     visible_units = rbm.complete_units_list(visible_units)
     hidden_units = rbm.complete_units_list(hidden_units)
-    
+
     # complete the supplied vmap
     v0_vmap = rbm.complete_vmap(v0_vmap)
-    
+
     hidden_vmap = rbm.mean_field(hidden_units, v0_vmap)
     hidden_vmap.update(v0_vmap) # we can just add the supplied vmap to the hidden vmap to
     # ensure that any context units are also in the hidden vmap. We do not run the risk
@@ -112,7 +112,7 @@ def mean_reconstruction(rbm, visible_units, hidden_units, v0_vmap):
     # note that the hidden vmap need not be completed, since the hidden_units list
     # has already been completed.
     reconstruction_vmap = rbm.mean_field(visible_units, hidden_vmap)
-    
+
     return reconstruction_vmap
 
 
@@ -125,10 +125,10 @@ def sparsity_penalty(rbm, hidden_units, v0_vmap, target):
     """
     # complete units lists
     hidden_units = rbm.complete_units_list(hidden_units)
-    
+
     # complete the supplied vmap
     v0_vmap = rbm.complete_vmap(v0_vmap)
-    
+
     hidden_vmap = rbm.mean_field(hidden_units, v0_vmap)
 
     penalty_terms = []
@@ -162,7 +162,7 @@ def mse(units_list, vmap_targets, vmap_predictions):
     """
     Computes the mean square error between two vmaps representing data
     and reconstruction.
-    
+
     units_list: list of input units instances
     vmap_targets: vmap dictionary containing targets
     vmap_predictions: vmap dictionary containing model predictions
@@ -174,12 +174,10 @@ def cross_entropy(units_list, vmap_targets, vmap_predictions):
     """
     Computes the cross entropy error between two vmaps representing data
     and reconstruction.
-    
+
     units_list: list of input units instances
     vmap_targets: vmap dictionary containing targets
     vmap_predictions: vmap dictionary containing model predictions
     """
     t, p = vmap_targets, vmap_predictions
     return sum((- t[u] * T.log(p[u]) - (1 - t[u]) * T.log(1 - p[u])) for u in units_list)
-
-    
