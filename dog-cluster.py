@@ -60,7 +60,7 @@ def rbm(threadName, data):
     for epoch in xrange(epochs):
         for i in xrange(h):
             # get cost for training the data point
-            costs = [m for m in train({ rbm.v: data[i,:].reshape(1,10) })]
+            costs = [m for m in train({ rbm.v: data[i,:].reshape(1,n_visible) })]
             # print "MSE = %.4f, thread = %s" % (np.mean(costs), threadName)
             if threadName == "Thread-1":
                 costs_1.append(np.mean(costs))
