@@ -23,6 +23,7 @@ class BinaryBinaryRBM(RBM):
         self.bh = parameters.BiasParameters(self, self.h, theano.shared(value = self._initial_bh(), name='bh'), name='bh') # hidden bias
 
     def _initial_W(self):
+        np.random.seed()
         return np.asarray( np.random.uniform(
                    low   = -4*np.sqrt(6./(self.n_hidden+self.n_visible)),
                    high  =  4*np.sqrt(6./(self.n_hidden+self.n_visible)),
@@ -53,6 +54,7 @@ class GaussianBinaryRBM(RBM):
         self.bh = parameters.BiasParameters(self, self.h, theano.shared(value = self._initial_bh(), name='bh'), name='bh') # hidden bias
 
     def _initial_W(self):
+        np.random.seed()
         return np.asarray( np.random.uniform(
                    low   = -4*np.sqrt(6./(self.n_hidden+self.n_visible)),
                    high  =  4*np.sqrt(6./(self.n_hidden+self.n_visible)),
@@ -64,4 +66,3 @@ class GaussianBinaryRBM(RBM):
 
     def _initial_bh(self):
         return np.zeros(self.n_hidden, dtype = theano.config.floatX)
-    
