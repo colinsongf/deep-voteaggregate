@@ -29,19 +29,3 @@ def multinomial(a):
     # this is the expected input for theano.nnet.softmax and theano_rng.multinomial
     s = theano_rng.multinomial(n=1, pvals=p, dtype=theano.config.floatX)
     return s.reshape(a.shape) # reshape back to original shape
-
-def exponential(a):
-    uniform_samples = theano_rng.uniform(size=a.shape, dtype=theano.config.floatX)
-    return (-1 / a) * T.log(1 - uniform_samples)
-
-def truncated_exponential(a, maximum=1.0):
-    uniform_samples = theano_rng.uniform(size=a.shape, dtype=theano.config.floatX)
-    return (-1 / a) * T.log(1 - uniform_samples*(1 - T.exp(-a * maximum)))
-
-def truncated_exponential_mean(a, maximum=1.0):
-    # return (1 / a) + (maximum / (1 - T.exp(maximum*a))) # this is very unstable around a=0, even for a=0.001 it's already problematic.
-    # here is a version that switches depending on the magnitude of the input
-    m_real = (1 / a) + (maximum / (1 - T.exp(maximum*a)))
-    m_approx = 0.5 - (1./12)*a + (1./720)*a**3 - (1./30240)*a**5 # + (1./1209600)*a**7 # this extra term is unnecessary, it's accurate enough
-    return T.switch(T.abs_(a) > 0.5, m_real, m_approx)
-    

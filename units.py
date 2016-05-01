@@ -30,11 +30,6 @@ class BinaryUnits(Units):
         p = self.success_probability_from_activation(activation_vmap)
         return vmap[self] * T.log(p) + (1 - vmap[self]) * T.log(1 - p)
 
-class GaussianPrecisionProxyUnits(ProxyUnits):
-    def __init__(self, rbm, units, name=None):
-        func = lambda x: x**2 / 2.0
-        super(GaussianPrecisionProxyUnits, self).__init__(rbm, units, func, name)
-
 class GaussianUnits(Units):
     def __init__(self, rbm, name=None):
         super(GaussianUnits, self).__init__(rbm, name)
