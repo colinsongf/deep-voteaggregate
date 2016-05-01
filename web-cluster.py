@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 plt.ion()
 
 from multiprocessing import Pool, freeze_support
-import itertools, json
+import itertools, json, sys, getopt
 
 mode = None
 
@@ -81,7 +81,11 @@ def rbm_star(a_b):
     # time.sleep(np.random.rand(1,1)*120)
     return rbm(*a_b)
 
-def k_rbm(data):
+def k_rbm(infile, outfile):
+    #dataset
+    data = sio.loadmat(infile)['data']
+
+    # reconstruction cost
     cost_dict = {}
     p = Pool(5)
     first_arg = ["Thread-1", "Thread-2", "Thread-3", "Thread-4", "Thread-5"]
@@ -108,10 +112,27 @@ def k_rbm(data):
         else:
             cost_dict[i+1] = 5
 
-    json.dump(cost_dict, open("results2v.txt", 'w'))
+    # store results
+    json.dump(cost_dict, open(outfile, 'w'))
 
 if __name__ == "__main__":
-    #dataset
-    data = sio.loadmat('data/web/web3v.mat')['data']
+    # file input
+    infile = ''
+    outfile = ''
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi:o:", ["in_file=", "out_file="])
+    except getopt.GetoptError:
+        print 'python web-cluster.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == "-h":
+            print 'python web-cluster.py -i <inputfile> -o <outputfile>'
+            sys.exit()
+        elif opt in ("-i", "--in_file"):
+            infile = arg
+        elif opt in ("-o", "--out_file"):
+            outfile = arg
+
     # run the k-rbm model
-    k_rbm(data)
+    k_rbm(infile, outfile)

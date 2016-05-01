@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 plt.ion()
 
 from multiprocessing import Pool, freeze_support
-import itertools, json
+import itertools, json, sys, getopt
 
 mode = None
 
@@ -119,7 +119,23 @@ def k_rbm(data):
 
 
 if __name__ == "__main__":
-    #dataset
-    data = sio.loadmat('data/q2g.mat')['data']
+    # file input
+    infile = ''
+    outfile = ''
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi:o:", ["in_file=", "out_file="])
+    except getopt.GetoptError:
+        print 'python dog-cluster.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == "-h":
+            print 'python dog-cluster.py -i <inputfile> -o <outputfile>'
+            sys.exit()
+        elif opt in ("-i", "--in_file"):
+            infile = arg
+        elif opt in ("-o", "--out_file"):
+            outfile = arg
+
     # run the k-rbm model
-    k_rbm(data)
+    k_rbm(infile, outfile)
