@@ -27,16 +27,11 @@ def get_context(u, N=4):
         x[i, :] = dat
     return x
 
-
-
-
 def plot_data(d):
     plt.figure(5)
     plt.clf()
     plt.imshow(d.reshape((28,28)), interpolation='gaussian')
     plt.draw()
-
-
 
 
 def one_hot(vec, dim=None):
