@@ -2,11 +2,14 @@ Deep Vote Aggregation
 =====================
 Deep Approximations of Wisdom of Crowd: RBMs for Vote Aggregation
 
+The code shows the evaluation of vote aggregation as a clustering problem and performs clustering using the K-RBM model.
 
-Disclaimer
------------
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+To run the code for the dog-model
+``` python
+  python dog-cluster.py -i <inputfile> -o <outputfile>
+```
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+To run the code for the web-model
+``` python
+  python web-cluster.py -i <inputfile> -o <outputfile>
+```
