@@ -1,5 +1,5 @@
 import csv
-import json
+import json, sys, getopt
 
 def dog_results(filename):
     results = json.load(open(filename))
@@ -16,7 +16,7 @@ def dog_results(filename):
             rCount[3] += 1
 
 
-    with open("dog-output.csv") as csvfile:
+    with open("data/dog/dog-output.csv") as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         # from the original file, get the count
         aCount = [0,0,0,0]
@@ -42,7 +42,7 @@ def dog_results(filename):
     if acc > 1:
         print filename, 1.00
     else:
-        print filename, acc
+        print acc
 
 def web_results(filename):
     results = json.load(open(filename))
@@ -60,7 +60,7 @@ def web_results(filename):
         if int(results[a]) == 5:
             rCount[4] += 1
 
-    with open("web-output.tsv") as csvfile:
+    with open("data/web/web-output.tsv") as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t', quotechar='|')
         # from the original file, get the count
         aCount = [0,0,0,0,0]
@@ -88,18 +88,38 @@ def web_results(filename):
     if acc > 1:
         print filename, 1.00
     else:
-        print filename, acc
+        print acc
 
+
+if __name__ == "__main__":
+    # file input
+    infile = ''
+    option = ''
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi:o:", ["in_file=", "options="])
+    except getopt.GetoptError:
+        print 'python error.py -i <inputfile> -o <options>'
+        print '<options> --> 1 for web and 2 for dog'
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == "-h":
+            print 'python error.py -i <inputfile> -o <options>'
+            sys.exit()
+        elif opt in ("-i", "--in_file"):
+            infile = arg
+        elif opt in ("-o", "--options"):
+            option = arg
+
+    # run the error modules
+    if int(option) == 1:
+        web_results(infile)
+    elif int(option) == 2:
+        dog_results(infile)
 
 
 # print "Web Results"
-web_results('results/web/results5vh.txt')
-web_results('results/web/results3vh.txt')
-web_results('results/web/results1v3h.txt')
-web_results('results/web/results1v5h.txt')
+# web_results('results/web/results5vh.txt')
 
 # print "Dog Results"
-dog_results('results/dog/results4vh.txt')
-dog_results('results/dog/results2vh.txt')
-dog_results('results/dog/results1v2h.txt')
-dog_results('results/dog/results1v4h.txt')
+# dog_results('results/dog/results4vh.txt')
