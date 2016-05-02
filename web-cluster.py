@@ -123,12 +123,12 @@ if __name__ == "__main__":
         opts, args = getopt.getopt(sys.argv[1:], "hi:o:", ["in_file=", "out_file="])
     except getopt.GetoptError:
         print 'python web-cluster.py -i <inputfile> -o <outputfile>'
-        print 'Change number of hidden units in line 29 of code'
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == "-h":
             print 'python web-cluster.py -i <inputfile> -o <outputfile>'
+            print 'Change number of hidden units in line 29 of code'
             sys.exit()
         elif opt in ("-i", "--in_file"):
             infile = arg
