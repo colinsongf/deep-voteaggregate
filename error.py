@@ -99,12 +99,12 @@ if __name__ == "__main__":
         opts, args = getopt.getopt(sys.argv[1:], "hi:o:", ["in_file=", "options="])
     except getopt.GetoptError:
         print 'python error.py -i <inputfile> -o <options>'
-        print '<options> --> 1 for web and 2 for dog'
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == "-h":
             print 'python error.py -i <inputfile> -o <options>'
+            print '<options> --> 1 for web and 2 for dog'
             sys.exit()
         elif opt in ("-i", "--in_file"):
             infile = arg
